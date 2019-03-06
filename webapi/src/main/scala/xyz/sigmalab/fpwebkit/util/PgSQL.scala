@@ -5,6 +5,8 @@ import doobie.{ConnectionIO, FC, Transactor}
 import cats.implicits._
 import doobie.implicits._
 
+import scala.language.higherKinds
+
 trait PgSQL {
 
     val DRIVER_NAME = "org.postgresql.Driver"
