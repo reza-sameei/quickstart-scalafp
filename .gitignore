@@ -1,2 +1,9 @@
+
 *.class
 *.log
+
+target
+project/target
+
+webapi/target
+webapi/project/target
