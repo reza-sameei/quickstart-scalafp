@@ -38,61 +38,21 @@ class UserSuite extends org.specs2.mutable.Specification with IOChecker {
 
 
     {
-        val list = userRepo.createTable
+        val list = userRepo.cleanUp ++ userRepo.setUp
         val fl = list.tail.foldLeft(list.head){ (s,i) => s *> i }
         transactor.trans.apply(fl).unsafeRunSync()
     }
 
     check(userRepo.qByInternal(1))
-
-    // check(userRepo.addUser(data.NotRegistered("bisphone.com", "reza.sameei")))
-
-    // check(userRepo.addUser(data.NotRegistered("sigmalab.xyz", "reza.sameei")))
-
-    /*
-
-    [error] /mnt/mine/work/trialblaze/quickstart/webapi/src/test/scala/xyz/sigmalab/fpwebkit/demo/model/repo/UserSuite.scala:41:10:
-    could not find implicit value for evidence parameter of type
-    doobie.util.testing.Analyzable[doobie.ConnectionIO[xyz.sigmalab.fpwebkit.demo.model.data.User]]
-
-    [error] /mnt/mine/work/trialblaze/quickstart/webapi/src/test/scala/xyz/sigmalab/fpwebkit/demo/model/repo/UserSuite.scala:44:10:
-    could not find implicit value for evidence parameter of type
-    doobie.util.testing.Analyzable[doobie.ConnectionIO[xyz.sigmalab.fpwebkit.demo.model.data.User]]
+    check(userRepo.qByPublic("bisphone.com", "reza.sameei"))
+    check(userRepo.qInsert(data.NotRegistered("bisphone.com", "reza.sameei")))
+    check(userRepo.qSetDeleted(data.User(1, "bisphone.com", "reza.sameei", data.User.State.NotActivatedYet)))
 
 
 
-     */
-
-}
-
-
-case class Country(code: Int, name: String, pop: Int, gnp: Double)
-
-class CountryRepo {
-
-    val create = sql"""
-                        CREATE TABLE country (
-                          code        character(3)  NOT NULL,
-                          name        text          NOT NULL,
-                          population  integer       NOT NULL,
-                          gnp         numeric(10,2),
-                          indepyear   smallint
-                          -- more columns, but we won't use them here
-                        )
-                       """.update.run
-
-    val trivial = sql"""
-  select 42, 'foo'::varchar
-""".query[(Int, String)]
-
-    def biggerThan(minPop: Short) = sql"""
-  select code, name, population, gnp, indepyear
-  from country
-  where population > $minPop
-""".query[Country]
-
-    def update(oldName: String, newName: String) = sql"""
-  update country set name = $newName where name = $oldName
-""".update
-
+    /*{
+        val list = userRepo.cleanUp
+        val fl = list.tail.foldLeft(list.head){ (s,i) => s *> i }
+        transactor.trans.apply(fl).unsafeRunSync()
+    }*/
 }

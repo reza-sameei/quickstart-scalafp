@@ -76,19 +76,22 @@ object UserRepo {
 
     trait UserQuery { self: Util with UserStateMap =>
 
-        val createTable = Seq(
-            sql"DROP TABLE IF EXISTS user_base".update.run,
+        val setUp = Seq(
             sql"""CREATE TABLE user_base (
-                   internal_id          serial,
-                   public_namespace     varchar,
-                   public_identity      varchar,
-                   state                int,
+                   internal_id          bigserial NOT NULL,
+                   public_namespace     varchar NOT NULL,
+                   public_identity      varchar NOT NULL,
+                   state                int NOT NULL,
                    PRIMARY KEY          (internal_id)
                 )""".update.run
             , {
                 fr"CREATE INDEX user_base_public_mix ON user_base(public_namespace, public_identity)"
             }.update.run
 
+        )
+
+        val cleanUp = Seq(
+            sql"DROP TABLE IF EXISTS user_base".update.run
         )
 
         protected  val selectAll =
