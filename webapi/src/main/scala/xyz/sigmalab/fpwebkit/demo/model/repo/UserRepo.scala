@@ -12,7 +12,7 @@ import scala.annotation.switch
 
 class UserRepo extends UserRepo.Base {
 
-    def byId(internal: Long) : ConnectionIO[Option[data.User]] =
+    def byInternal(internal: Long) : ConnectionIO[Option[data.User]] =
         qByInternal(internal).option
 
     def byPublic(namespace: String, identity: String) : ConnectionIO[Option[data.User]] =
@@ -74,7 +74,7 @@ object UserRepo {
 
     }
 
-    trait UserQuery { self: Util with UserStateMap =>
+    trait SetupQuery {
 
         val setUp = Seq(
             sql"""CREATE TABLE user_base (
@@ -93,6 +93,9 @@ object UserRepo {
         val cleanUp = Seq(
             sql"DROP TABLE IF EXISTS user_base".update.run
         )
+    }
+
+    trait TxQuery { self: Util with UserStateMap =>
 
         protected  val selectAll =
             fr"""SELEcT internal_id, public_namespace, public_identity, state FROM user_base"""
@@ -117,6 +120,6 @@ object UserRepo {
         }.update
     }
 
-    trait Base extends UserQuery with UserStateMap with Util
+    trait Base extends TxQuery with UserStateMap with Util
 
 }

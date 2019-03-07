@@ -12,7 +12,11 @@ object ProjectPlugin extends AutoPlugin {
     )
 
     val commonOptions = Seq(
-            scalacOptions += "-Ypartial-unification"
+            scalacOptions ++= Seq(
+                "-Ypartial-unification",
+                "-feature",
+                "-Y"
+            )
         ,   Test / fork := true
         ,   Compile / fork := true
         ,   run / connectInput := true

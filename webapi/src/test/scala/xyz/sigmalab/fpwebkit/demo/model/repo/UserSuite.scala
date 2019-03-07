@@ -34,7 +34,7 @@ class UserSuite extends org.specs2.mutable.Specification with IOChecker {
 
     check(trivial)
 
-    val userRepo = new UserRepo.Base {}
+    val userRepo = new UserRepo.Base with UserRepo.SetupQuery {}
 
 
     {
