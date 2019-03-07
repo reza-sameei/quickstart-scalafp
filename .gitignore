@@ -4,8 +4,22 @@
 *.class
 *.log
 
-target
-project/target
+target/
+# project/target
 
-webapi/target
-webapi/project/target
+# webapi/target
+# webapi/project/target
+
+
+# sbt specific
+.cache
+.history
+.lib/
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+.DS_Store
