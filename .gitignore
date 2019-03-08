@@ -1,15 +1,6 @@
 
-.idea
-
 *.class
 *.log
-
-target/
-# project/target
-
-# webapi/target
-# webapi/project/target
-
 
 # sbt specific
 .cache
@@ -21,5 +12,12 @@ lib_managed/
 src_managed/
 project/boot/
 project/plugins/project/
+target/
+# project/target
+# webapi/target
+# webapi/project/target
 
 .DS_Store
+
+# Idea specific
+.idea

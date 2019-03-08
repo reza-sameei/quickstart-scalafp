@@ -1,0 +1,21 @@
+
+
+
+-- Mood = SignedUp, Activated, Blocked, Deleted }
+-- User = { InternalID, CreationDate, Organization, ExtIdentifier, PublicIdentifier, Mood }
+
+CREATE TABLE user_base (
+    internal_id         BIGSERIAL NOT NULL,
+    email               varchar (50),
+    phone               varchar (15),
+    namespace           VARCHAR (50),
+    public_id           VARCHAR (50),
+    status              TINYINT NOT NULL,
+    creation_date       TIMESTAMP NOT NULL,
+    PRIMARY KEY         (internal_id)
+)
+
+CREATE INDEX user_base_namespace_public_unique_index ON user_base(namespace, pulbic_id);
+
+
+class UserRepo[F[_]: Effect](configuration)

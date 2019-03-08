@@ -73,7 +73,7 @@
     <check level="error" class="org.scalastyle.scalariform.OverrideJavaChecker" enabled="true"/>
     <check level="error" class="org.scalastyle.scalariform.RedundantIfChecker" enabled="true"/>
     <check level="error" class="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" enabled="true"/>
-    <check level="error" class="org.scalastyle.scalariform.BlockImportChecker" enabled="true"/>
+    <check level="error" class="org.scalastyle.scalariform.BlockImportChecker" enabled="false"/>
     <check level="error" class="org.scalastyle.scalariform.DeprecatedJavaChecker" enabled="true"/>
     <check level="error" class="org.scalastyle.scalariform.EmptyInterpolatedStringChecker" enabled="true"/>
     <check level="error" class="org.scalastyle.scalariform.ForBraceChecker" enabled="true"/>

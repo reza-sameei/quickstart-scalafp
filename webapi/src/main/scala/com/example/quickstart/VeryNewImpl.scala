@@ -1,10 +1,15 @@
 package com.example.quickstart
 
-import cats.effect._, org.http4s._, org.http4s.dsl.io._
-import org.http4s.server.blaze._
-import cats.effect.implicits._
+import cats._
 import cats.implicits._
+
+import cats.effect._
+import cats.effect.implicits._
+
+import org.http4s._
 import org.http4s.implicits._
+import org.http4s.dsl.io._
+import org.http4s.server.blaze._
 import org.http4s.server.Router
 
 
