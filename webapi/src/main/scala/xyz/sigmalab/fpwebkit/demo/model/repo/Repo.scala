@@ -150,8 +150,6 @@ object Example {
         protected val selectAll =
             fr"SELECT internal, desc, state FROM " ++ Fragment.const(tableName)
 
-        def qInsert(desc: String, st: )
-
     }
 
 }

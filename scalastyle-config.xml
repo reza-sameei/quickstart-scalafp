@@ -68,7 +68,7 @@
     <check level="error" class="org.scalastyle.scalariform.StructuralTypeChecker" enabled="true"></check>
     <check level="error" class="org.scalastyle.scalariform.LowercasePatternMatchChecker" enabled="true"/>
     <check level="error" class="org.scalastyle.scalariform.MultipleStringLiteralsChecker" enabled="false"/>
-    <check level="error" class="org.scalastyle.scalariform.NamedArgumentChecker" enabled="true"/>
+    <check level="error" class="org.scalastyle.scalariform.NamedArgumentChecker" enabled="false"/>
     <check level="error" class="org.scalastyle.scalariform.NonASCIICharacterChecker" enabled="true"/>
     <check level="error" class="org.scalastyle.scalariform.OverrideJavaChecker" enabled="true"/>
     <check level="error" class="org.scalastyle.scalariform.RedundantIfChecker" enabled="true"/>
