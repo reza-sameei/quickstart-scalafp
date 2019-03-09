@@ -1,8 +1,10 @@
-package xyz.sigmalab.fpwebkit.demo.model.repo
+package xyz.sigmalab.fptemplate.demov1.model.repo
 
 import doobie._
 import doobie.implicits._
-import xyz.sigmalab.fpwebkit.demo.model.data
+import xyz.sigmalab.fptemplate.demov1.model.data
+
+import scala.collection.immutable.NumericRange
 
 class TodoRepo(override val tableName : String) extends TodoRepo.TodoRepoQuery {
 
@@ -13,7 +15,7 @@ class TodoRepo(override val tableName : String) extends TodoRepo.TodoRepoQuery {
             .withUniqueGeneratedKeys[data.TodoItem](columns: _*)
 
 
-    def list(org: Long, range: Range) : ConnectionIO[Seq[data.TodoItem]] =
+    def list(org: Long, range: NumericRange[Long]) : ConnectionIO[Seq[data.TodoItem]] =
         qList(org, range).to[Seq]
 
 }
@@ -83,14 +85,9 @@ object TodoRepo {
                   """
         }.update
 
-        def qList(orgId: Long, range: Range) : Query0[data.TodoItem] = {
-            val limit : Long = { range.max - range.min }.toLong
-            val offset : Long = range.min.toLong
-            selectAll ++ fr"WHERE ord_id = ${orgId} LIMIT $limit OFFSET $offset"
+        def qList(orgId: Long, range: NumericRange[Long]) : Query0[data.TodoItem] = {
+            selectAll ++ fr"WHERE org_id = $orgId LIMIT ${range.max - range.min} OFFSET ${range.min}"
         }.query[data.TodoItem]
-
     }
 
 }
-
-

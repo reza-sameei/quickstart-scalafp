@@ -38,6 +38,18 @@ object Dependencies {
         val catsEffectDefaults = Seq(catsEffect)
     }
 
+    object circe {
+
+        val org = "io.circe"
+        val version = "0.11.1"
+
+        val circeCore = org %% "circe-core" % version
+        val circeParser = org %% "circe-parser" % version
+        val circeGeneric = org %% "circe-generic" % version
+        val circeLiteral = org %% "circe-literal" % version
+
+        val circeDefaults = Seq(circeCore, circeParser, circeGeneric, circeLiteral)
+    }
 
     object fs2 {
 
@@ -62,8 +74,8 @@ object Dependencies {
         val doobieH2 = org %% "doobie-h2" % version
         val doobiePostgresql = org %% "doobie-postgres" % version
 
-        val doobieSpecs2 = org %% "doobie-specs2" % version % Test
-        val doobieScalatest = org %% "doobie-scalatest" % version % Test
+        val doobieSpecs2 = org %% "doobie-specs2" % version
+        val doobieScalatest = org %% "doobie-scalatest" % version
 
         val pgsqlSetup = Seq(doobieCore, doobieHikari, doobiePostgresql)
         val h2Setup = Seq(doobieCore, doobieHikari, doobieH2)

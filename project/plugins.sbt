@@ -24,3 +24,5 @@ addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.1.0")
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.3")
 addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "1.6.0-RC4")
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
+
+addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)

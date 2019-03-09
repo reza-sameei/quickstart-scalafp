@@ -1,4 +1,4 @@
-package xyz.sigmalab.fpwebkit.demo.model.repo
+package xyz.sigmalab.fptemplate.demov1.model.repo
 
 import scala.concurrent.ExecutionContext
 // import cats._
@@ -9,9 +9,9 @@ import org.scalatest._
 // import doobie._
 import doobie.implicits._
 import doobie.scalatest._
-import xyz.sigmalab.fpwebkit.demo.model.data.{TodoItem, TodoState}
+import xyz.sigmalab.fptemplate.demov1.model.data.{TodoItem, TodoState}
 
-class TodoSuiteX extends FlatSpec with MustMatchers with IOChecker {
+class TodoRepoSuite extends FlatSpec with MustMatchers with IOChecker with BeforeAndAfterAll {
 
     implicit val cs = IO.contextShift(ExecutionContext.global)
 
@@ -26,18 +26,26 @@ class TodoSuiteX extends FlatSpec with MustMatchers with IOChecker {
     import y._
     */
 
-
-    val trivial = sql"""select 42, 'foo'::varchar""".query[(Int, String)]
-
-    "triavial" must "trivial" in { check(trivial) }
-
     val baserep = new TodoRepo.TodoRepoSetup with TodoRepo.TodoRepoQuery {
         override def tableName : String = "todo_test"
     }
 
-    val list = baserep.cleanup ++ baserep.setup
-    val all = list.tail.foldLeft(list.head) { (s,i) => s *> i }
-    transactor.trans.apply(all).unsafeRunSync
+    override def beforeAll() : Unit = {
+        val list = baserep.cleanup ++ baserep.setup
+        val all = list.tail.foldLeft(list.head) { (s,i) => s *> i }
+        transactor.trans.apply(all).unsafeRunSync
+    }
+
+    override def afterAll(): Unit = {
+        val list = baserep.cleanup
+        val all = list.tail.foldLeft(list.head) { (s,i) => s *> i }
+        transactor.trans.apply(all).unsafeRunSync
+    }
+
+
+    val trivial = sql"""select 42, 'foo'::varchar""".query[(Int, String)]
+
+    "triavial" must "trivial" in { check(trivial) }
 
     /* "todorepo" must "setup" in {
         val list = repo.cleanup ++ repo.setup
@@ -51,14 +59,16 @@ class TodoSuiteX extends FlatSpec with MustMatchers with IOChecker {
 
     "todorepo" must "check update" in { check(baserep.qUpdate(id = 1, item)) }
 
-    "todorepo" must "check list" in { check(baserep.qList(orgId = 1, range = 0 to 20)) }
+    "todorepo" must "check list" in { check(baserep.qList(orgId = 1, Range.Long(0, 2, 1))) }
 
     "todorepo" must "add & query" in {
+
         val repo = new TodoRepo(baserep.tableName)
+
         val prog = for {
             a <- repo.add(org = 1, desc = "Write Todo Example")
             b <- repo.add(org = 1, desc = "Write Tests")
-            c <- repo.list(org = 1, range =0 to 2)
+            c <- repo.list(org = 1, range = Range.Long(0, 2, 1))
         } yield (a,b,c)
 
         val result @ (a,b, c) = prog.transact(transactor).unsafeRunSync()
@@ -66,3 +76,4 @@ class TodoSuiteX extends FlatSpec with MustMatchers with IOChecker {
         a :: b :: Nil mustEqual c
     }
 }
+
