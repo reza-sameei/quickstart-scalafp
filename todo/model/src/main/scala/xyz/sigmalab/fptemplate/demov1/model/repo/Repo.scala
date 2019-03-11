@@ -1,6 +1,6 @@
 package xyz.sigmalab.fptemplate.demov1.model.repo
 
-import doobie.ConnectionIO
+import doobie.{ConnectionIO, LogHandler}
 
 object Repo {
 
@@ -9,10 +9,13 @@ object Repo {
     }
 
     trait Setup {
+        implicit def logHandler: LogHandler
         def setup: Seq[ConnectionIO[Int]]
         def cleanup: Seq[ConnectionIO[Int]]
     }
 
-    trait Query {}
+    trait Query {
+        implicit def logHandler: LogHandler
+    }
 
 }

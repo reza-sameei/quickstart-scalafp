@@ -1,5 +1,7 @@
 package xyz.sigmalab.fptemplate.demov1.model.repo
 
+import doobie.util.log.LogHandler
+
 import scala.concurrent.ExecutionContext
 // import cats._
 import cats.implicits._
@@ -27,6 +29,7 @@ class TodoRepoSuite extends FlatSpec with MustMatchers with IOChecker with Befor
     */
 
     val baserep = new TodoRepo.TodoRepoSetup with TodoRepo.TodoRepoQuery {
+        implicit override def logHandler = LogHandler.jdkLogHandler
         override def tableName : String = "todo_test"
     }
 
@@ -37,6 +40,7 @@ class TodoRepoSuite extends FlatSpec with MustMatchers with IOChecker with Befor
     }
 
     override def afterAll(): Unit = {
+        return;
         val list = baserep.cleanup
         val all = list.tail.foldLeft(list.head) { (s,i) => s *> i }
         transactor.trans.apply(all).unsafeRunSync
@@ -63,17 +67,21 @@ class TodoRepoSuite extends FlatSpec with MustMatchers with IOChecker with Befor
 
     "todorepo" must "add & query" in {
 
-        val repo = new TodoRepo(baserep.tableName)
+        val repo = new TodoRepo(baserep.tableName, LogHandler.jdkLogHandler)
 
         val prog = for {
             a <- repo.add(org = 1, desc = "Write Todo Example")
             b <- repo.add(org = 1, desc = "Write Tests")
-            c <- repo.list(org = 1, range = Range.Long(0, 2, 1))
+            c <- repo.list(
+                org = 1,
+                range = Range.Long(start = 0, end = 2, step = 1) /* eclusive range */
+            )
         } yield (a,b,c)
 
         val result @ (a,b, c) = prog.transact(transactor).unsafeRunSync()
         info(result.toString)
-        a :: b :: Nil mustEqual c
+        c.size == 2
+        a :: b :: Nil mustEqual c.toList
     }
 }
 

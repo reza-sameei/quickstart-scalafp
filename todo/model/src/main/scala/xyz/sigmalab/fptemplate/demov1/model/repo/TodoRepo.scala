@@ -6,7 +6,10 @@ import xyz.sigmalab.fptemplate.demov1.model.data
 
 import scala.collection.immutable.NumericRange
 
-class TodoRepo(override val tableName : String) extends TodoRepo.TodoRepoQuery {
+class TodoRepo(
+    override val tableName : String,
+    override implicit val logHandler: LogHandler
+) extends TodoRepo.TodoRepoQuery {
 
     import TodoRepo.TodoRepoUtil._
 
@@ -70,8 +73,7 @@ object TodoRepo {
 
         protected val columns = Array("org_id", "description", "state", "id")
 
-
-        def qInsert(item: data.TodoItem) : Update0 = {
+        def qInsert(item: data.TodoItem): Update0 = {
             fr"INSERT INTO" ++ Fragment.const(tableName) ++
                 fr"""(org_id, description, state) VALUES (${item.orgId}, ${item.description}, ${item.state})"""
         }.update
@@ -86,7 +88,7 @@ object TodoRepo {
         }.update
 
         def qList(orgId: Long, range: NumericRange[Long]) : Query0[data.TodoItem] = {
-            selectAll ++ fr"WHERE org_id = $orgId LIMIT ${range.max - range.min} OFFSET ${range.min}"
+            selectAll ++ fr"WHERE org_id = $orgId LIMIT ${range.size.toLong} OFFSET ${range.min}"
         }.query[data.TodoItem]
     }
 
