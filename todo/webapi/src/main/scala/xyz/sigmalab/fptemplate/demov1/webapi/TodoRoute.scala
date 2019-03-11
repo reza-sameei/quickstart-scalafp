@@ -21,9 +21,9 @@ trait TodoRoute {
 
     import TodoRoute._
 
-    def todoService: TodoService
+    def todoService : TodoService
 
-    def resourceTx: Resource[IO, doobie.Transactor[IO]]
+    def resourceTx : Resource[IO, doobie.Transactor[IO]]
 
     def todoRoute = HttpRoutes.of[IO] {
 
@@ -31,9 +31,11 @@ trait TodoRoute {
             :? QueryParam.TodoListLimit(limit)
             +& QueryParam.TodoListOffset(offset) =>
 
-            val a = resourceTx.use { implicit tx => for {
-                list <- todoService.list(org, Range.Long(offset, offset + limit, 1))
-            } yield list.asJson }
+            val a = resourceTx.use { implicit tx =>
+                for {
+                    list <- todoService.list(org, Range.Long(offset, offset + limit, 1))
+                } yield list.asJson
+            }
 
             val b = Ok(a)
 
@@ -51,7 +53,7 @@ trait TodoRoute {
             val finalVal = for {
                 bytes <- req.body.compile.foldChunks(new ArrayBuffer[Byte]()) { (buf, chunk) =>
                     val iter = chunk.iterator
-                    while(iter.hasNext) buf.append(iter.next)
+                    while ( iter.hasNext ) buf.append(iter.next)
                     buf
                 }
 
@@ -76,24 +78,52 @@ trait TodoRoute {
             implicit val x = jsonOf[IO, TodoRoute.UserDef]
             for {
                 user <- req.as[TodoRoute.UserDef]
-                list = req.headers.map { h => f"${h.name.toString}%30s : ${h.value}"}
+                list = req.headers.map { h => f"${h.name.toString}%30s : ${h.value}" }
                 done <- Ok(s"Hello: ${user.name} \n${list.mkString("\n")}")
             } yield done
+
+
+        case req @ POST -> Root / "debug" / "file_up" =>
+
+            // https://stackoverflow.com/questions/47368919/processing-multipart-content-in-http4s
+
+            import org.http4s.multipart._
+            import fs2.text.utf8Decode
+            import cats.implicits._
+
+            req.decode[Multipart[IO]] { m =>
+                m.parts.find(_.name == Some("avatar")) match {
+                    case None => BadRequest("OPS")
+                    case Some(part) =>
+                        for {
+                            // contents <- part.body.through(utf8Decode).runFoldMonoid
+                            contents <- part.body.through(utf8Decode).compile.foldMonoid
+                            response <- Ok(
+                                s"""Multipart Data\nParts:${m.parts.length}
+                                     |File contents: ${contents}""".stripMargin)
+                        } yield response
+                }
+            }
     }
 
 }
 
 object TodoRoute {
 
-    object QueryParam{
+    object QueryParam {
+
         object TodoListLimit extends QueryParamDecoderMatcher[Long]("limit")
+
         object TodoListOffset extends QueryParamDecoderMatcher[Long]("from")
+
     }
 
     object Data {
-        case class DescriptionOfTodo(value: String)
+
+        case class DescriptionOfTodo(value : String)
+
     }
 
-    case class UserDef(name: String, age: Int)
+    case class UserDef(name : String, age : Int)
 
 }
