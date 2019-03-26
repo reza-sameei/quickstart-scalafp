@@ -1,6 +1,7 @@
 package xyz.sigmalab.fptemplate.demov1.webapi
 
 import java.nio.charset.StandardCharsets
+import java.nio.file.{Paths, StandardOpenOption}
 
 import cats.effect._
 import org.http4s._
@@ -65,11 +66,11 @@ trait TodoRoute {
 
             finalVal
 
-        case req @ GET -> Root / "debug" / "return_json" =>
+        case GET -> Root / "debug" / "return_json" =>
             import io.circe.literal._
             Ok(json"""{"name": "Reza", "age": 30}""")
 
-        case req @ GET -> Root / "debug" / "return_json_v2" =>
+        case GET -> Root / "debug" / "return_json_v2" =>
             Ok(TodoRoute.UserDef("Reza", 30).asJson)
 
         case req @ POST -> Root / "debug" / "ops" =>
@@ -104,8 +105,26 @@ trait TodoRoute {
                         } yield response
                 }
             }
-    }
 
+
+        case req @ POST -> Root / "debug" / "file_save" =>
+
+            import org.http4s.multipart._
+            import cats.implicits._
+
+            req.decode[Multipart[IO]] { m =>
+                m.parts.find(_.name == "file".some) match {
+                    case None => BadRequest("OPS")
+                    case Some(part) =>
+                        import scala.concurrent.ExecutionContext.global
+                        implicit val ctxShift = IO.contextShift(global)
+                        val flags =  StandardOpenOption.CREATE :: Nil
+                        val writer = fs2.io.file.writeAll[IO](Paths.get("/tmp/file"), global, flags)
+                        val result = part.body.through(writer).compile.drain
+                        result.flatMap { _ => Ok(s"DONE") }
+                }
+            }
+    }
 }
 
 object TodoRoute {

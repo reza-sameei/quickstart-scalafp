@@ -21,3 +21,6 @@ target/
 
 # Idea specific
 .idea
+*.swp
+.ensime
+.ensime_cache

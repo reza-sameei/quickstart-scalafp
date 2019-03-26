@@ -25,4 +25,8 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.3")
 addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "1.6.0-RC4")
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
 
+// https://github.com/fiadliel/fs2-grpc
+// addSbtPlugin("org.lyranthe.fs2-grpc" % "sbt-java-gen" % "0.3.0")
+addSbtPlugin("org.lyranthe.fs2-grpc" % "sbt-java-gen" % "0.4.0-RC1")
+
 addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)

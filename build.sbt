@@ -28,6 +28,22 @@ lazy val todoWebAPI = Project("todoWebAPI", file("todo/webapi"))
         libraryDependencies += Dependencies.test.scalatest % Test,
     )
 
+// https://github.com/fiadliel/fs2-grpc
+lazy val todoProtobuf = Project("todoProto", file("todo/protobuf"))
+  .enablePlugins(ProjectPlugin, JavaAppPackaging)
+  .enablePlugins(Fs2Grpc)
+
+lazy val todoGRPCServer = Project("todoGRPCServer", file("todo/grpc-server"))
+  .enablePlugins(ProjectPlugin, JavaAppPackaging)
+  .dependsOn(todoProtobuf, todoModel)
+  .settings(
+    libraryDependencies += Dependencies.logging.logback,
+    libraryDependencies += Dependencies.test.scalatest % Test,
+    libraryDependencies ++= Dependencies.ioGrpc.grpcDefaults,
+    libraryDependencies ++= Dependencies.google.googleDefaults,
+    libraryDependencies += Dependencies.fs2Grpc.runtime,
+  )
+
 lazy val webapi = Project("webapi", file("webapi")) // (project in file(""))
   .enablePlugins(ProjectPlugin, JavaAppPackaging)
   .settings(

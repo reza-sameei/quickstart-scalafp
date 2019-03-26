@@ -81,6 +81,37 @@ object Dependencies {
         val h2Setup = Seq(doobieCore, doobieHikari, doobieH2)
     }
 
+    object ioGrpc {
+        val org = "io.grpc"
+        val version = "1.18.0"
+
+        val grpcContext = org % "grpc-context" % version
+        val grpcCore = org % "grpc-core" % version
+        val grpcNetty = org % "grpc-netty" % version
+        val grpcProtobuf = org % "grpc-protobuf" % version
+        val grpcProtoLite = org % "grpc-protobuf-lite" % version
+        val grpcServices = org % "grpc-services" % version
+        val grpcStub = org % "grpc-stub" % version
+
+        val grpcDefaults = Seq(
+            grpcContext, grpcCore, grpcNetty, grpcServices,
+            grpcProtobuf, grpcProtoLite,
+            grpcServices, grpcStub
+        )
+    }
+
+    object google {
+        val googleGuava = "com.google.guava"    % "guava"         % "27.0.1-jre"
+        val googleProtobuf = "com.google.protobuf" % "protobuf-java" % "3.6.1"
+        val googleDefaults = Seq(googleGuava, googleProtobuf)
+    }
+
+    object fs2Grpc {
+      val org = "org.lyranthe.fs2-grpc"
+      val version = "0.4.0-M4"
+      val runtime: ModuleID = org %% "java-runtime" % version
+    }
+
     object compilerPlugin {
         val kindProjector = "org.spire-math" %% "kind-projector" % "0.9.6"
         val betterMonadicFor = "com.olegpy" %% "better-monadic-for" % "0.2.4"

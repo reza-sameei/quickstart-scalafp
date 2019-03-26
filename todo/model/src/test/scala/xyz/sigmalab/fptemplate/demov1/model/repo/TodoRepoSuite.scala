@@ -20,7 +20,7 @@ class TodoRepoSuite extends FlatSpec with MustMatchers with IOChecker with Befor
     override def transactor : doobie.Transactor[IO] =
         doobie.Transactor.fromDriverManager[IO](
             "org.postgresql.Driver",
-            "jdbc:postgresql://192.168.1.106:5432/world",
+            "jdbc:postgresql://192.168.1.107:5432/world",
             "testuser", "testpass"
         )
     /*

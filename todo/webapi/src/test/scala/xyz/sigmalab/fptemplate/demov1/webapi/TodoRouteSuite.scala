@@ -160,9 +160,47 @@ class TodoRouteSuite extends FlatSpec with Http4sSuiteTemplate {
             `Content-Type`(MediaType.text.plain)
         )
 
-        val multipart = Multipart[IO](Vector(name, age,fileRef))
+        val multipart = Multipart[IO](Vector(name, age, fileRef))
 
         val req = Request[IO](Method.POST, Uri.uri("/debug/file_up"))
+            .withEntity(multipart)
+            .withHeaders(multipart.headers) // KeepItInMind
+        // val req = Request[IO](Method.POST, Uri.uri("/debug/show_body")).withEntity(multipart)
+
+        val resp = todoRoute.todoRoute.orNotFound(req).unsafeRunSync()
+
+        info(resp.toString)
+        info(resp.bodyString)
+
+    }
+
+    it must "upload & save file" in {
+
+
+        import org.http4s.multipart._
+        import org.http4s.headers.`Content-Type`
+
+        val file = new java.io.File("/home/reza/.bashrc")
+
+        val blockingEC = scala.concurrent.ExecutionContext.global
+        // implicit val ctxShift = IO.contextShift(blockingEC)
+        cs // defined at above
+
+
+        // https://github.com/http4s/http4s/blob/master/examples/blaze/src/main/scala/com/example/http4s/blaze/demo/client/MultipartClient.scala
+        val name = Part.formData[IO]("name", "Reza")
+        val age = Part.formData[IO]("age", "30")
+        val fileRef = Part.fileData[IO](
+            "file",
+            file,
+            blockingEC,
+            // `Content-Type`(MediaType.image.png)
+            `Content-Type`(MediaType.text.plain)
+        )
+
+        val multipart = Multipart[IO](Vector(name, age, fileRef))
+
+        val req = Request[IO](Method.POST, Uri.uri("/debug/file_save"))
             .withEntity(multipart)
             .withHeaders(multipart.headers) // KeepItInMind
         // val req = Request[IO](Method.POST, Uri.uri("/debug/show_body")).withEntity(multipart)

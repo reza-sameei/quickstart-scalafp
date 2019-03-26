@@ -30,18 +30,18 @@ object TodoRepo {
         final val TodoStateMap_IN_LIST : Short = 10
         final val TodoStateMap_DONE : Short  = 20
 
-        def todoStateToInt(st: data.TodoState) : Short = st match {
+        def todoStateToShort(st: data.TodoState) : Short = st match {
             case data.TodoState.InList => TodoStateMap_IN_LIST
             case data.TodoState.Done => TodoStateMap_DONE
         }
 
-        def todoStateFromInt(st: Short) : data.TodoState = (st : @scala.annotation.switch) match {
+        def todoStateFromShort(st: Short) : data.TodoState = (st : @scala.annotation.switch) match {
             case `TodoStateMap_IN_LIST` => data.TodoState.inList
             case `TodoStateMap_DONE` => data.TodoState.done
         }
 
-        implicit val $todoState$Get : Get[data.TodoState] = Get[Short].map(todoStateFromInt)
-        implicit val $todoState$Put : Put[data.TodoState] = Put[Short].contramap(todoStateToInt)
+        implicit val $todoState$Get : Get[data.TodoState] = Get[Short].map(todoStateFromShort)
+        implicit val $todoState$Put : Put[data.TodoState] = Put[Short].contramap(todoStateToShort)
 
     }
 

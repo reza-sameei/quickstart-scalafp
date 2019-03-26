@@ -22,7 +22,7 @@ trait PgSQL {
                 DRIVER_NAME,
                 url, username, password,
                 ce, // await connection here
-                te // execute JDBC operations here
+                te //  execute JDBC operations here
             )
         } yield xa
     }
