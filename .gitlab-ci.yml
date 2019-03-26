@@ -5,7 +5,8 @@ test:
   # image: enzief/egreen-ci:sbt-1.2.8
   image: hseeberger/scala-sbt
   script:
-    - sbt clean coverage test coverageReport
+    - sbt clean test
+    # - sbt clean coverage test coverageReport
   cache:
     key: "$CI_BUILD_REF_NAME" # contains either the branch or the tag, so it's caching per branch
     untracked: true
