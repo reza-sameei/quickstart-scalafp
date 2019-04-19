@@ -17,10 +17,8 @@ class TodoRepo(
         qInsert(data.TodoItem(org, desc, data.TodoState.inList, None))
             .withUniqueGeneratedKeys[data.TodoItem](columns: _*)
 
-
     def list(org: Long, range: NumericRange[Long]) : ConnectionIO[Seq[data.TodoItem]] =
         qList(org, range).to[Seq]
-
 }
 
 object TodoRepo {
